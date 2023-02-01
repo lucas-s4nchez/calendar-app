@@ -1,11 +1,15 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { AppRoutes } from "./router/AppRoutes";
 import Theme from "./theme/Theme";
 
 const CalendarApp = () => {
   return (
-    <Theme>
-      <h1>Calendar App</h1>
-    </Theme>
+    <BrowserRouter>
+      <Theme>
+        <AppRoutes />
+      </Theme>
+    </BrowserRouter>
   );
 };
 
