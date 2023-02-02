@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Calendar } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { addHours } from "date-fns";
@@ -21,6 +22,10 @@ const events = [
 ];
 
 export const CalendarPage = () => {
+  const [lastView, setLastView] = useState(
+    localStorage.getItem("lastView") || "month"
+  );
+
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
       backgroundColor: "#262254",
@@ -30,6 +35,16 @@ export const CalendarPage = () => {
     };
     return { style };
   };
+  const onDoubleClickEventSelect = (event) => {
+    console.log({ doubleclick: event });
+  };
+  const onClickEventSelect = (event) => {
+    console.log({ click: event });
+  };
+  const onViewChange = (event) => {
+    localStorage.setItem("lastView", event);
+    setLastView(event);
+  };
 
   return (
     <>
@@ -37,6 +52,7 @@ export const CalendarPage = () => {
 
       <Calendar
         culture="es"
+        defaultView={lastView}
         localizer={localizer}
         events={events}
         startAccessor="start"
@@ -44,6 +60,9 @@ export const CalendarPage = () => {
         style={{ height: "calc(100vh - 80px)" }}
         messages={getMessagesEs()}
         eventPropGetter={eventStyleGetter}
+        onDoubleClickEvent={onDoubleClickEventSelect}
+        onSelectEvent={onClickEventSelect}
+        onView={onViewChange}
         components={{
           event: CalendarEventBox,
         }}
