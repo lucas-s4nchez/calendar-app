@@ -6,6 +6,7 @@ import { addHours } from "date-fns";
 import { getMessagesEs, localizer } from "../../helpers";
 import { Navbar } from "../components/Navbar";
 import { CalendarEventBox } from "../components/CalendarEventBox";
+import { CalendarModal } from "../components/CalendarModal";
 
 const events = [
   {
@@ -67,6 +68,8 @@ export const CalendarPage = () => {
           event: CalendarEventBox,
         }}
       />
+
+      <CalendarModal />
     </>
   );
 };
