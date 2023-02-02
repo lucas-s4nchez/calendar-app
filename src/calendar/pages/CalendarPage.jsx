@@ -7,25 +7,30 @@ import { getMessagesEs, localizer } from "../../helpers";
 import { Navbar } from "../components/Navbar";
 import { CalendarEventBox } from "../components/CalendarEventBox";
 import { CalendarModal } from "../components/CalendarModal";
+import { useCalendarStore, useUiStore } from "../../hooks";
+import { Fab } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
-const events = [
-  {
-    title: "nuevo evento",
-    nota: "probando react-big-calendar",
-    start: new Date(),
-    end: addHours(new Date(), 2),
-    bgColor: "#fafafa",
-    user: {
-      id: "123abc",
-      name: "Lucas",
-    },
-  },
-];
+// const events = [
+//   {
+//     title: "nuevo evento",
+//     nota: "probando react-big-calendar",
+//     start: new Date(),
+//     end: addHours(new Date(), 2),
+//     bgColor: "#fafafa",
+//     user: {
+//       id: "123abc",
+//       name: "Lucas",
+//     },
+//   },
+// ];
 
 export const CalendarPage = () => {
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "month"
   );
+  const { handleOpenDateModal } = useUiStore();
+  const { events, handleSetActiveEvent } = useCalendarStore();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
@@ -37,14 +42,28 @@ export const CalendarPage = () => {
     return { style };
   };
   const onDoubleClickEventSelect = (event) => {
-    console.log({ doubleclick: event });
+    handleOpenDateModal();
   };
   const onClickEventSelect = (event) => {
-    console.log({ click: event });
+    handleSetActiveEvent(event);
   };
   const onViewChange = (event) => {
     localStorage.setItem("lastView", event);
     setLastView(event);
+  };
+  const handleAddNewEvent = (e) => {
+    handleSetActiveEvent({
+      title: "",
+      note: "",
+      start: new Date(),
+      end: addHours(new Date(), 2),
+      bgColor: "#fafafa",
+      user: {
+        id: "123abc",
+        name: "Lucas",
+      },
+    });
+    handleOpenDateModal();
   };
 
   return (
@@ -68,8 +87,20 @@ export const CalendarPage = () => {
           event: CalendarEventBox,
         }}
       />
-
       <CalendarModal />
+
+      <Fab
+        color="primary"
+        aria-label="Añadir nuevo evento"
+        sx={{
+          position: "fixed",
+          right: 20,
+          bottom: 20,
+        }}
+        onClick={handleAddNewEvent}
+      >
+        <AddIcon />
+      </Fab>
     </>
   );
 };

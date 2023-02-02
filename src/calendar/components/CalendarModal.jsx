@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import {
   Alert,
@@ -18,49 +18,56 @@ import {
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
+import { useCalendarStore, useUiStore } from "../../hooks";
 
 export const CalendarModal = () => {
-  const [open, setOpen] = useState(true);
-  const [startValue, setStartValue] = useState("");
-  const [endValue, setEndValue] = useState("");
-  const [alertMessage, setAlertMessage] = useState("");
-
-  const { getFieldProps, handleSubmit } = useFormik({
-    initialValues: {
-      title: "",
-      note: "",
-    },
-
-    onSubmit: (values) => {
-      if (!startValue || !endValue || !values.title || !values.note) {
-        setAlertMessage("Por favor, completa todos los campos del formulario");
-        return;
-      }
-      if (startValue > endValue) {
-        setAlertMessage(
-          "La fecha de finalizacion del evento debe ser mayor a la fecha de inicio del mismo"
-        );
-        return;
-      }
-
-      setAlertMessage("");
-
-      const newNote = {
-        title: values.title,
-        nota: values.note,
-        start: startValue,
-        end: endValue,
-      };
-
-      console.log(newNote);
-    },
+  const [formData, setFormData] = useState({
+    title: "",
+    note: "",
+    start: "",
+    end: "",
   });
+  const [alertMessage, setAlertMessage] = useState("");
+  const { isDateModalOpen, handleCloseDateModal } = useUiStore();
+  const { activeEvent } = useCalendarStore();
 
-  const handleClose = () => {
-    setOpen(false);
+  useEffect(() => {
+    if (activeEvent !== null) {
+      setFormData({ ...activeEvent });
+    }
+  }, [activeEvent]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!formData.start || !formData.end || !formData.title || !formData.note) {
+      setAlertMessage("Por favor, completa todos los campos del formulario");
+      return;
+    }
+    if (formData.start > formData.end) {
+      setAlertMessage(
+        "La fecha de finalizacion del evento debe ser mayor a la fecha de inicio del mismo"
+      );
+      return;
+    }
+
+    setAlertMessage("");
+
+    const newNote = {
+      title: formData.title,
+      nota: formData.note,
+      start: formData.start,
+      end: formData.end,
+    };
+
+    console.log(newNote);
   };
+
+  const handleChange = ({ target }) => {
+    setFormData({ ...formData, [target.name]: target.value });
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={isDateModalOpen} onClose={handleCloseDateModal}>
       <DialogTitle>Subscribe</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -81,9 +88,9 @@ export const CalendarModal = () => {
                 <MobileDateTimePicker
                   minDateTime={new Date()}
                   label="Fecha y hora de inicio"
-                  value={startValue}
+                  value={formData.start}
                   onChange={(newValue) => {
-                    setStartValue(newValue);
+                    setFormData({ ...formData, start: newValue });
                   }}
                   fullWidth
                   renderInput={(params) => (
@@ -100,9 +107,9 @@ export const CalendarModal = () => {
                 <DesktopDateTimePicker
                   minDateTime={new Date()}
                   label="Fecha y hora de inicio"
-                  value={startValue}
+                  value={formData.start}
                   onChange={(newValue) => {
-                    setStartValue(newValue);
+                    setFormData({ ...formData, start: newValue });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -118,11 +125,13 @@ export const CalendarModal = () => {
             <Box>
               <Box sx={{ display: { xs: "block", sm: "none" } }}>
                 <MobileDateTimePicker
-                  minDateTime={startValue !== "" ? startValue : new Date()}
+                  minDateTime={
+                    formData.end !== "" ? formData.start : new Date()
+                  }
                   label="Fecha y hora de finalización"
-                  value={endValue}
+                  value={formData.end}
                   onChange={(newValue) => {
-                    setEndValue(newValue);
+                    setFormData({ ...formData, end: newValue });
                   }}
                   fullWidth
                   renderInput={(params) => (
@@ -137,11 +146,13 @@ export const CalendarModal = () => {
               </Box>
               <Box sx={{ display: { xs: "none", sm: "block" } }}>
                 <DesktopDateTimePicker
-                  minDateTime={startValue !== "" ? startValue : new Date()}
+                  minDateTime={
+                    formData.end !== "" ? formData.start : new Date()
+                  }
                   label="Fecha y hora de finalización"
-                  value={endValue}
+                  value={formData.end}
                   onChange={(newValue) => {
-                    setEndValue(newValue);
+                    setFormData({ ...formData, end: newValue });
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -160,14 +171,18 @@ export const CalendarModal = () => {
             label="Título"
             type="text"
             fullWidth
-            {...getFieldProps("title")}
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
             helperText="* Título del evento"
           />
           <TextField
             label="Nota"
             type="text"
             fullWidth
-            {...getFieldProps("note")}
+            name="note"
+            value={formData.note}
+            onChange={handleChange}
             helperText="* Información adicional sobre el evento"
           />
           {!!alertMessage && (
@@ -176,7 +191,7 @@ export const CalendarModal = () => {
             </Alert>
           )}
           <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleCloseDateModal}>Cancel</Button>
             <Button type="submit">Subscribe</Button>
           </DialogActions>
         </Box>
