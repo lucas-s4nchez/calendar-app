@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import {
   Alert,
   Box,
@@ -171,7 +170,11 @@ export const CalendarModal = () => {
             {...getFieldProps("note")}
             helperText="* Información adicional sobre el evento"
           />
-          {!!alertMessage && <Alert severity="error">{alertMessage}</Alert>}
+          {!!alertMessage && (
+            <Alert severity="error" variant="filled">
+              {alertMessage}
+            </Alert>
+          )}
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
             <Button type="submit">Subscribe</Button>
