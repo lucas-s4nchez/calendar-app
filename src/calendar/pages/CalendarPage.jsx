@@ -10,6 +10,7 @@ import { CalendarModal } from "../components/CalendarModal";
 import { useCalendarStore, useUiStore } from "../../hooks";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 // const events = [
 //   {
@@ -30,7 +31,8 @@ export const CalendarPage = () => {
     localStorage.getItem("lastView") || "month"
   );
   const { handleOpenDateModal } = useUiStore();
-  const { events, handleSetActiveEvent } = useCalendarStore();
+  const { events, handleSetActiveEvent, startDeletingEvent } =
+    useCalendarStore();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
     const style = {
@@ -64,6 +66,9 @@ export const CalendarPage = () => {
       },
     });
     handleOpenDateModal();
+  };
+  const handleDeleteEvent = () => {
+    startDeletingEvent();
   };
 
   return (
@@ -100,6 +105,18 @@ export const CalendarPage = () => {
         onClick={handleAddNewEvent}
       >
         <AddIcon />
+      </Fab>
+      <Fab
+        color="error"
+        aria-label="Eliminar evento"
+        sx={{
+          position: "fixed",
+          left: 20,
+          bottom: 20,
+        }}
+        onClick={handleDeleteEvent}
+      >
+        <DeleteIcon />
       </Fab>
     </>
   );

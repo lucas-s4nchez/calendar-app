@@ -50,7 +50,6 @@ export const CalendarModal = () => {
     }
 
     setAlertMessage("");
-
     await startSavingEvent(formData);
     handleCloseDateModal();
   };
