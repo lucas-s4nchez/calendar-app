@@ -7,4 +7,8 @@ export const store = configureStore({
     ui: uiReducer,
     calendar: calendarReducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });

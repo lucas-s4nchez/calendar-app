@@ -31,7 +31,7 @@ export const CalendarPage = () => {
     localStorage.getItem("lastView") || "month"
   );
   const { handleOpenDateModal } = useUiStore();
-  const { events, handleSetActiveEvent, startDeletingEvent } =
+  const { events, hasEventSelected, handleSetActiveEvent, startDeletingEvent } =
     useCalendarStore();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
@@ -106,18 +106,20 @@ export const CalendarPage = () => {
       >
         <AddIcon />
       </Fab>
-      <Fab
-        color="error"
-        aria-label="Eliminar evento"
-        sx={{
-          position: "fixed",
-          left: 20,
-          bottom: 20,
-        }}
-        onClick={handleDeleteEvent}
-      >
-        <DeleteIcon />
-      </Fab>
+      {hasEventSelected && (
+        <Fab
+          color="error"
+          aria-label="Eliminar evento"
+          sx={{
+            position: "fixed",
+            left: 20,
+            bottom: 20,
+          }}
+          onClick={handleDeleteEvent}
+        >
+          <DeleteIcon />
+        </Fab>
+      )}
     </>
   );
 };
