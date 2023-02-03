@@ -19,6 +19,10 @@ import {
 } from "@mui/x-date-pickers";
 import { useCalendarStore, useUiStore } from "../../hooks";
 
+import DoDisturbIcon from "@mui/icons-material/DoDisturb";
+import SaveIcon from "@mui/icons-material/Save";
+import SaveAsIcon from "@mui/icons-material/SaveAs";
+
 export const CalendarModal = () => {
   const [formData, setFormData] = useState({
     title: "",
@@ -28,7 +32,8 @@ export const CalendarModal = () => {
   });
   const [alertMessage, setAlertMessage] = useState("");
   const { isDateModalOpen, handleCloseDateModal } = useUiStore();
-  const { activeEvent, startSavingEvent } = useCalendarStore();
+  const { activeEvent, hasEventSelected, startSavingEvent } =
+    useCalendarStore();
 
   useEffect(() => {
     if (activeEvent !== null) {
@@ -183,8 +188,20 @@ export const CalendarModal = () => {
             </Alert>
           )}
           <DialogActions>
-            <Button onClick={handleCloseDateModal}>Cancel</Button>
-            <Button type="submit">Subscribe</Button>
+            <Button
+              onClick={handleCloseDateModal}
+              variant="outlined"
+              endIcon={<DoDisturbIcon />}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              endIcon={hasEventSelected ? <SaveAsIcon /> : <SaveIcon />}
+            >
+              {hasEventSelected ? "Modificar" : "Guardar"}
+            </Button>
           </DialogActions>
         </Box>
       </DialogContent>
