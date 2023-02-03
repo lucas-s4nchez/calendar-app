@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useFormik } from "formik";
 import {
   Alert,
   Box,
@@ -29,7 +28,7 @@ export const CalendarModal = () => {
   });
   const [alertMessage, setAlertMessage] = useState("");
   const { isDateModalOpen, handleCloseDateModal } = useUiStore();
-  const { activeEvent } = useCalendarStore();
+  const { activeEvent, startSavingEvent } = useCalendarStore();
 
   useEffect(() => {
     if (activeEvent !== null) {
@@ -37,7 +36,7 @@ export const CalendarModal = () => {
     }
   }, [activeEvent]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.start || !formData.end || !formData.title || !formData.note) {
       setAlertMessage("Por favor, completa todos los campos del formulario");
@@ -52,14 +51,8 @@ export const CalendarModal = () => {
 
     setAlertMessage("");
 
-    const newNote = {
-      title: formData.title,
-      nota: formData.note,
-      start: formData.start,
-      end: formData.end,
-    };
-
-    console.log(newNote);
+    await startSavingEvent(formData);
+    handleCloseDateModal();
   };
 
   const handleChange = ({ target }) => {
