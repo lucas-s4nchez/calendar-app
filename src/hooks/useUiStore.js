@@ -1,8 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
-import { onCloseDateModal, onOpenDateModal } from "../store";
+import {
+  onChangePasswordVisibility,
+  onCloseDateModal,
+  onOpenDateModal,
+} from "../store";
 
 export const useUiStore = () => {
-  const { isDateModalOpen } = useSelector((state) => state.ui);
+  const { isDateModalOpen, isVisiblePassword } = useSelector(
+    (state) => state.ui
+  );
   const dispatch = useDispatch();
 
   const handleOpenDateModal = () => {
@@ -13,12 +19,18 @@ export const useUiStore = () => {
     dispatch(onCloseDateModal());
   };
 
+  const handlePasswordVisibility = () => {
+    dispatch(onChangePasswordVisibility());
+  };
+
   return {
     //*Propiedades
     isDateModalOpen,
+    isVisiblePassword,
 
     //*Métodos
     handleOpenDateModal,
     handleCloseDateModal,
+    handlePasswordVisibility,
   };
 };

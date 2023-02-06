@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   isDateModalOpen: false,
+  isVisiblePassword: false,
 };
 
 const uiSlice = createSlice({
@@ -14,9 +15,13 @@ const uiSlice = createSlice({
     onCloseDateModal: (state) => {
       state.isDateModalOpen = false;
     },
+    onChangePasswordVisibility: (state) => {
+      state.isVisiblePassword = !state.isVisiblePassword;
+    },
   },
 });
 
-export const { onOpenDateModal, onCloseDateModal } = uiSlice.actions;
+export const { onOpenDateModal, onCloseDateModal, onChangePasswordVisibility } =
+  uiSlice.actions;
 
 export default uiSlice.reducer;
