@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Calendar } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { addHours } from "date-fns";
@@ -7,7 +7,7 @@ import { getMessagesEs, localizer } from "../../helpers";
 import { Navbar } from "../components/Navbar";
 import { CalendarEventBox } from "../components/CalendarEventBox";
 import { CalendarModal } from "../components/CalendarModal";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useUiStore } from "../../hooks";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -31,12 +31,19 @@ export const CalendarPage = () => {
     localStorage.getItem("lastView") || "month"
   );
   const { handleOpenDateModal } = useUiStore();
-  const { events, hasEventSelected, handleSetActiveEvent, startDeletingEvent } =
-    useCalendarStore();
+  const { user } = useAuthStore();
+  const {
+    events,
+    hasEventSelected,
+    handleSetActiveEvent,
+    startDeletingEvent,
+    startLoadingEvents,
+  } = useCalendarStore();
 
   const eventStyleGetter = (event, start, end, isSelected) => {
+    const myEvent = user.uid === event.user._id || user.uid === event.user.uid;
     const style = {
-      backgroundColor: "#262254",
+      backgroundColor: myEvent ? "#347cf7" : "#465660",
       borderRadius: "0px",
       opacity: 0.8,
       color: "white",
@@ -57,19 +64,20 @@ export const CalendarPage = () => {
     handleSetActiveEvent({
       title: "",
       note: "",
-      start: new Date(),
-      end: addHours(new Date(), 2),
+      start: "",
+      end: "",
       bgColor: "#fafafa",
-      user: {
-        id: "123abc",
-        name: "Lucas",
-      },
+      user,
     });
     handleOpenDateModal();
   };
   const handleDeleteEvent = () => {
     startDeletingEvent();
   };
+
+  useEffect(() => {
+    startLoadingEvents();
+  }, []);
 
   return (
     <>

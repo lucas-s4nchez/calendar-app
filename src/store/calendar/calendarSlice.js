@@ -1,30 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { addHours } from "date-fns";
 
 const initialState = {
-  events: [
-    {
-      _id: new Date().getTime(),
-      title: "nuevo evento",
-      note: "probando react-big-calendar",
-      start: new Date(),
-      end: addHours(new Date(), 2),
-      bgColor: "#fafafa",
-      user: {
-        id: "123abc",
-        name: "Lucas",
-      },
-    },
-  ],
+  isLoadingEvents: true,
+  events: [],
   activeEvent: null,
+  calendarErrorMessage: undefined,
 };
 
 const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
-    loadEvents: (state, { payload }) => {
-      state.events = payload;
+    onLoadEvents: (state, { payload }) => {
+      state.isLoadingEvents = false;
+      payload.forEach((event) => {
+        const exist = state.events.some((dbEvent) => dbEvent.id === event.id);
+        if (!exist) {
+          state.events.push(event);
+        }
+      });
     },
     onSetActiveEvent: (state, { payload }) => {
       state.activeEvent = payload;
@@ -35,7 +29,7 @@ const calendarSlice = createSlice({
     },
     onUpdateEvent: (state, { payload }) => {
       state.events = state.events.map((event) => {
-        if (event._id === payload._id) {
+        if (event.id === payload.id) {
           return payload;
         }
         return event;
@@ -44,20 +38,33 @@ const calendarSlice = createSlice({
     onDeleteEvent: (state) => {
       if (state.activeEvent !== null) {
         state.events = state.events.filter(
-          (event) => event._id !== state.activeEvent._id
+          (event) => event.id !== state.activeEvent.id
         );
         state.activeEvent = null;
       }
     },
+    onLogoutCalendar: (state) => {
+      state.isLoadingEvents = true;
+      state.events = [];
+      state.activeEvent = null;
+      state.calendarErrorMessage = undefined;
+    },
+    // onAlertMessage: (state, { payload }) => {
+    //   state.calendarErrorMessage = payload;
+    // },
+    // clearAlertMessage: (state) => {
+    //   state.calendarErrorMessage = undefined;
+    // },
   },
 });
 
 export const {
-  loadEvents,
+  onLoadEvents,
   onSetActiveEvent,
   onAddNewEvent,
   onUpdateEvent,
   onDeleteEvent,
+  onLogoutCalendar,
 } = calendarSlice.actions;
 
 export default calendarSlice.reducer;

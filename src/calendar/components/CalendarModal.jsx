@@ -17,7 +17,7 @@ import {
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
-import { useCalendarStore, useUiStore } from "../../hooks";
+import { useAuthStore, useCalendarStore, useUiStore } from "../../hooks";
 
 import DoDisturbIcon from "@mui/icons-material/DoDisturb";
 import SaveIcon from "@mui/icons-material/Save";
@@ -34,12 +34,16 @@ export const CalendarModal = () => {
   const { isDateModalOpen, handleCloseDateModal } = useUiStore();
   const { activeEvent, hasEventSelected, startSavingEvent } =
     useCalendarStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     if (activeEvent !== null) {
       setFormData({ ...activeEvent });
     }
   }, [activeEvent]);
+
+  const myEvent =
+    user.uid === activeEvent?.user._id || user.uid === activeEvent?.user.uid;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +57,7 @@ export const CalendarModal = () => {
       );
       return;
     }
-
+    console.log(formData);
     setAlertMessage("");
     await startSavingEvent(formData);
     handleCloseDateModal();
@@ -198,11 +202,17 @@ export const CalendarModal = () => {
             <Button
               type="submit"
               variant="contained"
+              disabled={!myEvent}
               endIcon={hasEventSelected ? <SaveAsIcon /> : <SaveIcon />}
             >
               {hasEventSelected ? "Modificar" : "Guardar"}
             </Button>
           </DialogActions>
+          {!myEvent && (
+            <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
+              No podés editar o eliminar una nota que no creaste
+            </Alert>
+          )}
         </Box>
       </DialogContent>
     </Dialog>
