@@ -2,6 +2,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
+  Alert,
+  Box,
   Button,
   Grid,
   IconButton,
@@ -16,9 +18,10 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 import { AuthLayout } from "../layout/AuthLayout";
-import { useUiStore } from "../../hooks";
+import { useAuthStore, useUiStore } from "../../hooks";
 
 export const RegisterPage = () => {
+  const { errorMessage, startRegister } = useAuthStore();
   const { isVisiblePassword, handlePasswordVisibility } = useUiStore();
   const { getFieldProps, handleSubmit, errors, touched } = useFormik({
     initialValues: {
@@ -39,7 +42,7 @@ export const RegisterPage = () => {
         .min(6, "Minimo 6 caracteres"),
     }),
     onSubmit: (values) => {
-      console.log(values);
+      startRegister(values);
     },
   });
 
@@ -65,6 +68,14 @@ export const RegisterPage = () => {
                 ),
               }}
             />
+            <Box
+              sx={{
+                display: !!errorMessage?.name ? "" : "none",
+                marginBlock: 2,
+              }}
+            >
+              <Alert severity="error">{errorMessage?.name}</Alert>
+            </Box>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
@@ -84,6 +95,14 @@ export const RegisterPage = () => {
                 ),
               }}
             />
+            <Box
+              sx={{
+                display: !!errorMessage?.email ? "" : "none",
+                marginBlock: 2,
+              }}
+            >
+              <Alert severity="error">{errorMessage?.email}</Alert>
+            </Box>
           </Grid>
           <Grid item xs={12} sx={{ mt: 2 }}>
             <TextField
@@ -109,11 +128,16 @@ export const RegisterPage = () => {
                 ),
               }}
             />
+            <Box
+              sx={{
+                display: !!errorMessage?.password ? "" : "none",
+                marginBlock: 2,
+              }}
+            >
+              <Alert severity="error">{errorMessage?.password}</Alert>
+            </Box>
           </Grid>
           <Grid container spacing={2} sx={{ mb: 2, mt: 1 }}>
-            {/* <Grid item xs={12} display={!!errorMessage ? "" : "none"}>
-              <Alert severity="error">{errorMessage}</Alert>
-            </Grid> */}
             <Grid item xs={12}>
               <Button
                 type="submit"
