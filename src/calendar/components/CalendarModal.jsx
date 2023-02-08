@@ -6,14 +6,12 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   TextField,
 } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import esEs from "date-fns/locale/es";
 import {
-  DesktopDateTimePicker,
   LocalizationProvider,
   MobileDateTimePicker,
 } from "@mui/x-date-pickers";
@@ -69,23 +67,24 @@ export const CalendarModal = () => {
 
   return (
     <Dialog open={isDateModalOpen} onClose={handleCloseDateModal}>
-      <DialogTitle>Subscribe</DialogTitle>
+      <DialogTitle>Nuevo Evento</DialogTitle>
       <DialogContent>
-        <DialogContentText>
-          To subscribe to this website, please enter your email address here. We
-          will send updates occasionally.
-        </DialogContentText>
         <Box
           component="form"
           onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            paddingBlock: 2,
+          }}
         >
           <LocalizationProvider
             dateAdapter={AdapterDateFns}
             adapterLocale={esEs}
           >
             <Box>
-              <Box sx={{ display: { xs: "block", sm: "none" } }}>
+              <Box>
                 <MobileDateTimePicker
                   minDateTime={new Date()}
                   label="Fecha y hora de inicio"
@@ -94,24 +93,6 @@ export const CalendarModal = () => {
                     setFormData({ ...formData, start: newValue });
                   }}
                   fullWidth
-                  renderInput={(params) => (
-                    <TextField
-                      fullWidth
-                      {...params}
-                      error={false}
-                      helperText="* Selecciona la fecha de inicio del evento"
-                    />
-                  )}
-                />
-              </Box>
-              <Box sx={{ display: { xs: "none", sm: "block" } }}>
-                <DesktopDateTimePicker
-                  minDateTime={new Date()}
-                  label="Fecha y hora de inicio"
-                  value={formData.start}
-                  onChange={(newValue) => {
-                    setFormData({ ...formData, start: newValue });
-                  }}
                   renderInput={(params) => (
                     <TextField
                       fullWidth
@@ -124,10 +105,10 @@ export const CalendarModal = () => {
               </Box>
             </Box>
             <Box>
-              <Box sx={{ display: { xs: "block", sm: "none" } }}>
+              <Box>
                 <MobileDateTimePicker
                   minDateTime={
-                    formData.end !== "" ? formData.start : new Date()
+                    formData.start !== "" ? formData.start : new Date()
                   }
                   label="Fecha y hora de finalización"
                   value={formData.end}
@@ -135,26 +116,6 @@ export const CalendarModal = () => {
                     setFormData({ ...formData, end: newValue });
                   }}
                   fullWidth
-                  renderInput={(params) => (
-                    <TextField
-                      fullWidth
-                      {...params}
-                      error={false}
-                      helperText="* Selecciona la fecha de finalización del evento"
-                    />
-                  )}
-                />
-              </Box>
-              <Box sx={{ display: { xs: "none", sm: "block" } }}>
-                <DesktopDateTimePicker
-                  minDateTime={
-                    formData.end !== "" ? formData.start : new Date()
-                  }
-                  label="Fecha y hora de finalización"
-                  value={formData.end}
-                  onChange={(newValue) => {
-                    setFormData({ ...formData, end: newValue });
-                  }}
                   renderInput={(params) => (
                     <TextField
                       fullWidth

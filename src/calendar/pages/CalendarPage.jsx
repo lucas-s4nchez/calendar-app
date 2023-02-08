@@ -12,20 +12,6 @@ import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-// const events = [
-//   {
-//     title: "nuevo evento",
-//     nota: "probando react-big-calendar",
-//     start: new Date(),
-//     end: addHours(new Date(), 2),
-//     bgColor: "#fafafa",
-//     user: {
-//       id: "123abc",
-//       name: "Lucas",
-//     },
-//   },
-// ];
-
 export const CalendarPage = () => {
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "month"
@@ -34,11 +20,14 @@ export const CalendarPage = () => {
   const { user } = useAuthStore();
   const {
     events,
+    activeEvent,
     hasEventSelected,
     handleSetActiveEvent,
     startDeletingEvent,
     startLoadingEvents,
   } = useCalendarStore();
+  const myActiveEvent =
+    user.uid === activeEvent?.user._id || user.uid === activeEvent?.user.uid;
 
   const eventStyleGetter = (event, start, end, isSelected) => {
     const myEvent = user.uid === event.user._id || user.uid === event.user.uid;
@@ -114,7 +103,7 @@ export const CalendarPage = () => {
       >
         <AddIcon />
       </Fab>
-      {hasEventSelected && (
+      {hasEventSelected && myActiveEvent && (
         <Fab
           color="error"
           aria-label="Eliminar evento"
