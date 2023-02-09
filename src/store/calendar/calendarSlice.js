@@ -7,7 +7,7 @@ const initialState = {
   calendarErrorMessage: undefined,
 };
 
-const calendarSlice = createSlice({
+export const calendarSlice = createSlice({
   name: "calendar",
   initialState,
   reducers: {
