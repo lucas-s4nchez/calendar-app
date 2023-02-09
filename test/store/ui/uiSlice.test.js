@@ -4,16 +4,13 @@ import {
   onOpenDateModal,
   uiSlice,
 } from "../../../src/store/ui/uiSlice";
+import { initialState } from "../../fixtures/uiFixtures";
 
 describe("Pruebas en el uiSlice.js", () => {
   test("debe de retornar el estado inicial", () => {
-    const uiSliceInitialState = {
-      isDateModalOpen: false,
-      isVisiblePassword: false,
-    };
     const state = uiSlice.getInitialState();
 
-    expect(state).toEqual(uiSliceInitialState);
+    expect(state).toEqual(initialState);
   });
 
   test("debe de cambiar el isDateModalOpen correctamente", () => {
