@@ -23,7 +23,7 @@ export const AppRoutes = () => {
         sx={{ minHeight: "100vh", backgroundColor: "primary.main", padding: 4 }}
       >
         <Grid container direction="row" justifyContent="center">
-          <CircularProgress color="warning" />
+          <CircularProgress color="warning" data-testid="circular-progress" />
         </Grid>
       </Grid>
     );
